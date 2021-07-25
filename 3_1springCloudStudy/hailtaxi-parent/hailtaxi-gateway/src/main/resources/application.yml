@@ -1,0 +1,12 @@
+server:
+  port: 8001
+spring:
+  application:
+    name: hailtaxi-gateway
+  main:
+    allow-bean-definition-overriding: true
+
+management:
+  endpoint:
+    health:
+      show-details: always

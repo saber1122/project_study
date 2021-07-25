@@ -1,0 +1,48 @@
+server:
+  port: 18083
+spring:
+#  zipkin:
+#    #zipkin服务地址
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      probability: 1  #采样值，0~1之间，1表示全部信息都收集，值越大，效率越低
+  application:
+    name: hailtaxi-pay
+  cloud:
+    #Consul配置
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        #注册到Consul中的服务名字
+        service-name: ${spring.application.name}
+        #注册的服务的实例 Id，最好不要重复，这里参考官网建议的方式 带随机数
+        #instance-id: ${spring.application.name}:${vcap.application.instance_id:${spring.application.i nstance_id:${random.value}}}
+        # 自定义实例id为:应用名:ip:port
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        prefer-ip-address: true
+        # 开启服务注册
+        register: true
+        # 开启服务发现
+        enabled: true
+        #2 分钟之后健康检查未通过取消注册
+        health-check-critical-timeout: 2m
+        #consul 健康检查的轮询周期
+        health-check-interval: 10s
+    #Stream
+#    stream:
+#      binders: # 在此处配置要绑定的rabbitmq的服务信息；
+#        defaultRabbit: # 表示定义的名称，用于于binding整合
+#          type: rabbit # 消息组件类型
+#          environment: # 设置rabbitmq的相关的环境配置
+#            spring:
+#              rabbitmq:
+#                host: 192.168.200.129
+#                port: 5672
+#                username: guest
+#                password: guest
+#      bindings: # 服务的整合处理
+#        output: # 这个名字是一个通道的名称
+#          destination: payExchange # 表示要使用的Exchange名称定义
+#          content-type: application/json # 设置消息类型，本次为json，文本则设置“text/plain”
