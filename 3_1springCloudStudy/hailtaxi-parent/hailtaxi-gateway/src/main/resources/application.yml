@@ -5,6 +5,26 @@ spring:
     name: hailtaxi-gateway
   main:
     allow-bean-definition-overriding: true
+  cloud:
+    #consul 配置
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      #服务发现配置
+      discovery:
+        #注册到consul中的服务名字
+        service-name: ${spring.application.name}
+        # 服务注册的实例id，不要重复。官网默认方式：随机数 默认： 应用名：port
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        prefer-ip-address: true
+        #开启服务注册
+        register: true
+        #开启服务发现
+        enabled: true
+        # 2分钟后健康检查未通过取消注册
+        health-check-critical-timeout: 2m
+        # consul 健康检查的轮询周期
+        health-check-interval: 10s
 
 management:
   endpoint:
