@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.pattern.PathPatternParser;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Method;
 
@@ -47,7 +50,12 @@ public class GatewayApplication {
                 .build();
     }
 
-
+    /**
+     * @return org.springframework.web.cors.reactive.CorsWebFilter
+     * @Description 设置cookie跨域
+     * @Author ZhangShuangLong
+     * @Date 2021/8/12 23:37
+     **/
     @Bean
     public CorsWebFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
@@ -65,5 +73,25 @@ public class GatewayApplication {
         //允许所有请求跨域
         source.registerCorsConfiguration("/**", config);
         return new CorsWebFilter(source);
+    }
+
+    /**
+     * @return org.springframework.cloud.gateway.filter.ratelimit.KeyResolver
+     * @Description IP限流
+     * @Author ZhangShuangLong
+     * @Date 2021/8/12 23:38
+     **/
+    @Bean(name = "ipKeyResolver")
+    public KeyResolver userKeyResolver() {
+        return new KeyResolver() {
+            //exchange 上下文对象
+            @Override
+            public Mono<String> resolve(ServerWebExchange exchange) {
+                //获取远程客户端IP
+                String hostName = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+                System.out.println("hostName:" + hostName);
+                return Mono.just(hostName);
+            }
+        };
     }
 }

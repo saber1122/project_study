@@ -5,6 +5,10 @@ spring:
     name: hailtaxi-gateway
   main:
     allow-bean-definition-overriding: true
+    # 设置redis限流
+  redis:
+    host: 127.0.0.1
+    port: 6379
   cloud:
     #consul 配置
     consul:
@@ -52,6 +56,12 @@ spring:
             - Token=springcloud
           filters:
             - PayMethod=alipay,业务整合
+            # #请求数限流 名字不能随便写 ，使用默认的facatory
+            - name: RequestRateLimiter
+              args:
+                key-resolver: "#{@ipKeyResolver}"
+                redis-rate-limiter.replenishRate: 1
+                redis-rate-limiter.burstCapacity: 1
         # 唯一标识符
         - id: hailtaxi-order
           uri: lb://hailtaxi-order
