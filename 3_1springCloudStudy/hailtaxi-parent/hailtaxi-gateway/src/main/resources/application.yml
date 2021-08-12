@@ -25,6 +25,32 @@ spring:
         health-check-critical-timeout: 2m
         # consul 健康检查的轮询周期
         health-check-interval: 10s
+    # 配置路由
+    gateway:
+      #路由配置
+      routes:
+        # 唯一标识符
+        - id: hailtaxi-driver
+          uri: lb://hailtaxi-driver
+          # 路由断言
+          predicates:
+            - Path=/driver/**
+            - Cookie=username,itheima
+            - Header=token,123456
+            - Method=GET,POST
+            - Token=springcloud
+        # 唯一标识符
+        - id: hailtaxi-order
+          uri: lb://hailtaxi-order
+          # 路由断言
+          predicates:
+            - Path= /order/**
+        # 唯一标识符
+        - id: hailtaxi-pay
+          uri: lb://hailtaxi-pay
+          # 路由断言
+          predicates:
+            - Path= /pay/**
 
 management:
   endpoint:
