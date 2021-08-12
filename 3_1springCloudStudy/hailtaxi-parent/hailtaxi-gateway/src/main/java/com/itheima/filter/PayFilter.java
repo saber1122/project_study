@@ -13,11 +13,11 @@ import reactor.core.publisher.Mono;
  * @Description
  * @Date 2021/8/12 21:21
  */
-@Component
+
 public class PayFilter implements GlobalFilter, Ordered {
     /**
-     * @param exchange
-     * @param chain
+     * @param exchange 请求的上下文
+     * @param chain 过滤器链
      * @return reactor.core.publisher.Mono<java.lang.Void>
      * @Description 实现过滤的逻辑
      * @Author ZhangShuangLong

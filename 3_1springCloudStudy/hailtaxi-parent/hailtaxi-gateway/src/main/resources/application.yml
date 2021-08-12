@@ -39,6 +39,8 @@ spring:
             - Header=token,123456
             - Method=GET,POST
             - Token=springcloud
+          filters:
+            - PayMethod=alipay,业务整合
         # 唯一标识符
         - id: hailtaxi-order
           uri: lb://hailtaxi-order
