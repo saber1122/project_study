@@ -1,4 +1,5 @@
 package com.itheima;
+
 import com.itheima.filter.PayFilter;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +9,10 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.util.pattern.PathPatternParser;
 
 import java.lang.reflect.Method;
 
@@ -19,26 +24,46 @@ import java.lang.reflect.Method;
 public class GatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GatewayApplication.class,args);
+        SpringApplication.run(GatewayApplication.class, args);
     }
 
     /**
+     * @param builder
+     * @return org.springframework.cloud.gateway.route.RouteLocator
      * @Description 构建路由
      * @Author ZhangShuangLong
      * @Date 2021/8/7 13:13
-     * @param builder
-     * @return  org.springframework.cloud.gateway.route.RouteLocator
      **/
     //@Bean
-    public RouteLocator routeLocator(RouteLocatorBuilder builder){
+    public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 //来自 hailtaxi-driver（注册中心），path：请求路径  ，uri：要路由的地址（lb 负载均衡）
-                .route("hailtaxi-driver",r->r.path("/api/driver/**").and().cookie("username","itheiam")
-                        .and().header("token","123456").and().method(HttpMethod.GET,HttpMethod.POST).
-                                filters(f->f.filter((GatewayFilter) new PayFilter()).addResponseHeader("AddResponseHeader=X-Response-DefaultMyName","zslong")
-                                .stripPrefix(1)).uri("lb://hailtaxi-driver"))
-                .route("hailtaxi-order",r->r.path("/order/**").uri("lb://hailtaxi-order"))
-                .route("hailtaxi-pay",r->r.path("/pay/**").uri("lb://hailtaxi-pay"))
+                .route("hailtaxi-driver", r -> r.path("/api/driver/**").and().cookie("username", "itheiam")
+                        .and().header("token", "123456").and().method(HttpMethod.GET, HttpMethod.POST).
+                                filters(f -> f.filter((GatewayFilter) new PayFilter()).addResponseHeader("AddResponseHeader=X-Response-DefaultMyName", "zslong")
+                                        .stripPrefix(1)).uri("lb://hailtaxi-driver"))
+                .route("hailtaxi-order", r -> r.path("/order/**").uri("lb://hailtaxi-order"))
+                .route("hailtaxi-pay", r -> r.path("/pay/**").uri("lb://hailtaxi-pay"))
                 .build();
+    }
+
+
+    @Bean
+    public CorsWebFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        // cookie跨域
+        //允许携带cookie
+        config.setAllowCredentials(Boolean.TRUE);
+        config.addAllowedMethod("*");
+        //允许所有的源
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        // 配置前端js允许访问的自定义响应头
+        config.addExposedHeader("Authorization");
+        UrlBasedCorsConfigurationSource source = new
+                UrlBasedCorsConfigurationSource(new PathPatternParser());
+        //允许所有请求跨域
+        source.registerCorsConfiguration("/**", config);
+        return new CorsWebFilter(source);
     }
 }

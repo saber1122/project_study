@@ -27,6 +27,17 @@ spring:
         health-check-interval: 10s
     # 配置路由
     gateway:
+      # 跨域配置 此方法不适合cookie跨域
+      globalcors:
+        cors-configurations:
+          '[/*]':
+            #允许任何跨域方式
+            allowedOrigins: "*"
+            #允许的跨域方法
+            allowedMethods:
+              - Get
+              - POST
+              - PUT
       #路由配置
       routes:
         # 唯一标识符
