@@ -33,3 +33,16 @@ spring:
 logging:
   level:
     com.itheima: debug
+# feign开启数据压缩
+feign:
+  compression:
+    #开启请求压缩
+    request:
+      enabled: true
+      #设置压缩的数据类型
+      mime-types: text/html,application/json
+      # 设置触发压缩的大小下限
+      min-request-size: 2048
+      #开启响应压缩
+    response:
+      enabled: true
