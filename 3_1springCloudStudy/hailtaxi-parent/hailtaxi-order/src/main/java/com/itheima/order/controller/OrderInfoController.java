@@ -1,5 +1,6 @@
 package com.itheima.order.controller;
 
+import com.itheima.driver.feign.DriverFeign;
 import com.itheima.driver.model.Car;
 import com.itheima.driver.model.Driver;
 import com.itheima.order.model.OrderInfo;
@@ -18,19 +19,24 @@ import java.util.List;
 @RequestMapping(value = "/order")
 public class OrderInfoController {
 
-  
 
     @Autowired
     private OrderInfoService orderInfoService;
+
+    @Autowired
+    private DriverFeign driverFeign;
 
     /***
      * 下单
      */
     @PostMapping
-    public OrderInfo add(){
-        
+    public OrderInfo add() {
+        //在此处调用driver服务，修改司机状态
+        Driver driver = driverFeign.status("1", 2);
+
+
         //创建订单
-        OrderInfo orderInfo = new OrderInfo("No"+((int)(Math.random()*10000)), (int)(Math.random()*100), new Date(), "深圳北站", "罗湖港", null);
+        OrderInfo orderInfo = new OrderInfo("No" + ((int) (Math.random() * 10000)), (int) (Math.random() * 100), new Date(), "深圳北站", "罗湖港", driver);
         orderInfoService.add(orderInfo);
         return orderInfo;
     }

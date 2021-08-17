@@ -20,4 +20,9 @@ public class CarModel  implements Serializable {
     private Integer carNo;
     //车型描述
     private String name;
+
+    public CarModel(Integer carNo, String name) {
+        this.carNo = carNo;
+        this.name = name;
+    }
 }

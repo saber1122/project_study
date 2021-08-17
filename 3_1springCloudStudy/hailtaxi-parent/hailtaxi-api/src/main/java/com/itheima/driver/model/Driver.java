@@ -25,4 +25,44 @@ public class Driver implements Serializable {
     private Car car;
     //状态： 0 未上线，1 在线空闲， 2 接单中  3 接到乘客，行程进行中
     private Integer status;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Float getStar() {
+        return star;
+    }
+
+    public void setStar(Float star) {
+        this.star = star;
+    }
+
+    public Car getCar() {
+        return car;
+    }
+
+    public void setCar(Car car) {
+        this.car = car;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

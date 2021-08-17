@@ -28,4 +28,5 @@ public class OrderInfo  implements Serializable {
     private String endAddress;
     //接单司机
     private Driver driver;
+
 }
