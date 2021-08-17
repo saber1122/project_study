@@ -29,3 +29,7 @@ spring:
         health-check-critical-timeout: 2m
         #consul 健康检查的轮询周期
         health-check-interval: 10s
+# 开启日志级别
+logging:
+  level:
+    com.itheima: debug
